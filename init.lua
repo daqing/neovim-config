@@ -29,7 +29,7 @@ opt.matchtime = 5
 opt.laststatus = 2
 opt.ruler = true
 opt.showcmd = true
-opt.shortmess = "atI"
+opt.shortmess = "ltToOCFIa"
 opt.showmode = true
 opt.title = true
 opt.termguicolors = true
@@ -153,7 +153,9 @@ map("n", "<C-a>", ":!git add %<CR>")
 map("n", "<C-x>", ":cclose<CR>")
 map("n", "<leader>/", ":nohlsearch<CR>")
 map("n", "<F1>", ":wqall<CR>")
-map("n", ";", ":")
+-- Deliberately not via map(): "silent" makes Neovim draw the ":" at the end of a
+-- lingering message line instead of clearing it, so the first ";" looks dead
+vim.keymap.set("n", ";", ":", { noremap = true })
 map("n", "<leader>d", ":NERDTreeToggle<CR>")
 map("n", "<C-l>", ":EraseBadWhitespace<CR>")
 map("n", "<leader>t", ":GFiles<CR>")
