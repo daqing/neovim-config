@@ -1,0 +1,19 @@
+{
+  "ag.vim": { "branch": "master", "commit": "4a0dd6e190f446e5a016b44fdaa2feafc582918e" },
+  "base16-vim": { "branch": "master", "commit": "3be3cd82cd31acfcab9a41bad853d9c68d30478d" },
+  "fzf": { "branch": "master", "commit": "b1be3a8be1b833ce5b92fbbac11637643d60a046" },
+  "fzf.vim": { "branch": "master", "commit": "8a0068127ac9ee23d71dab2944ce995726bef462" },
+  "git-blame.vim": { "branch": "master", "commit": "9d144b7bed5d8f1c9259551768b7f3b3d1294917" },
+  "lazy.nvim": { "branch": "main", "commit": "306a05526ada86a7b30af95c5cc81ffba93fef97" },
+  "mason-lspconfig.nvim": { "branch": "main", "commit": "49b16d699f9ca83184330c6eb886737a27f23bdd" },
+  "mason.nvim": { "branch": "main", "commit": "2a6940af80375532e5e9e7c1f2fc6319a1b7a69d" },
+  "monokai.nvim": { "branch": "master", "commit": "fca3943173f6026347f9ffc68baab39454446c3b" },
+  "nerdtree": { "branch": "master", "commit": "690d061b591525890f1471c6675bcb5bdc8cdff9" },
+  "nvim-lspconfig": { "branch": "master", "commit": "ffd261c09c3dabd0bf1a438f47a8ae3b22f3c3ff" },
+  "palenight.vim": { "branch": "master", "commit": "9e9b102c54b830b72f51917b6b86c3b3b02dcea2" },
+  "supertab": { "branch": "main", "commit": "258304c582bda3efa2ffbbc02ea332e31faaac17" },
+  "tcomment_vim": { "branch": "master", "commit": "48ab639a461d9b8344f7fee06cb69b4374863b13" },
+  "vim-bad-whitespace": { "branch": "master", "commit": "51aca6d383fe277627794e1b84f7d2a93cbd4c18" },
+  "vim-hybrid": { "branch": "master", "commit": "cc58baabeabc7b83768e25b852bf89c34756bf90" },
+  "vim-monokai-pro": { "branch": "master", "commit": "6c449e5d4ef6086c519de0544d4aca46c0a9596c" }
+}
