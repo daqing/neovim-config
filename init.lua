@@ -74,18 +74,6 @@ opt.foldlevel = 4
 opt.foldopen = "block,hor,mark,percent,quickfix,tag"
 
 ----------------------------------------------------------------------
--- External runtime paths (only if present)
-----------------------------------------------------------------------
-for _, path in ipairs({
-    "/opt/homebrew/opt/fzf",
-    "/Users/daqing/.opam/4.14.2/share/ocp-indent/vim",
-}) do
-    if vim.fn.isdirectory(path) == 1 then
-        opt.rtp:prepend(path)
-    end
-end
-
-----------------------------------------------------------------------
 -- Plugin globals
 ----------------------------------------------------------------------
 vim.g.ackprg = "ag --nogroup --nocolor --column --ignore=db --ignore=log --ignore=tmp --ignore=test"
@@ -132,6 +120,17 @@ require("lazy").setup({
     "mason-org/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig",
 })
+
+----------------------------------------------------------------------
+-- External runtime paths (only if present)
+----------------------------------------------------------------------
+-- lazy.nvim resets 'runtimepath' during setup(), so external paths have to be
+-- prepended after it. ocp-indent must precede $VIMRUNTIME to shadow the
+-- built-in indent/ocaml.vim.
+local ocp_indent = "/Users/daqing/.opam/5.5.1/share/ocp-indent/vim"
+if vim.fn.isdirectory(ocp_indent) == 1 then
+    opt.rtp:prepend(ocp_indent)
+end
 
 require("lsp")
 
