@@ -29,7 +29,7 @@ opt.matchtime = 5
 opt.laststatus = 2
 opt.ruler = true
 opt.showcmd = true
-opt.shortmess = "atI"
+opt.shortmess = "ltToOCFIa"
 opt.showmode = true
 opt.title = true
 opt.termguicolors = true
@@ -72,18 +72,6 @@ opt.foldenable = true
 opt.foldmethod = "indent"
 opt.foldlevel = 4
 opt.foldopen = "block,hor,mark,percent,quickfix,tag"
-
-----------------------------------------------------------------------
--- External runtime paths (only if present)
-----------------------------------------------------------------------
-for _, path in ipairs({
-    "/opt/homebrew/opt/fzf",
-    "/Users/daqing/.opam/4.14.2/share/ocp-indent/vim",
-}) do
-    if vim.fn.isdirectory(path) == 1 then
-        opt.rtp:prepend(path)
-    end
-end
 
 ----------------------------------------------------------------------
 -- Plugin globals
@@ -133,6 +121,17 @@ require("lazy").setup({
     "neovim/nvim-lspconfig",
 })
 
+----------------------------------------------------------------------
+-- External runtime paths (only if present)
+----------------------------------------------------------------------
+-- lazy.nvim resets 'runtimepath' during setup(), so external paths have to be
+-- prepended after it. ocp-indent must precede $VIMRUNTIME to shadow the
+-- built-in indent/ocaml.vim.
+local ocp_indent = "/Users/daqing/.opam/5.5.1/share/ocp-indent/vim"
+if vim.fn.isdirectory(ocp_indent) == 1 then
+    opt.rtp:prepend(ocp_indent)
+end
+
 require("lsp")
 
 -- Colorscheme
@@ -153,7 +152,9 @@ map("n", "<C-a>", ":!git add %<CR>")
 map("n", "<C-x>", ":cclose<CR>")
 map("n", "<leader>/", ":nohlsearch<CR>")
 map("n", "<F1>", ":wqall<CR>")
-map("n", ";", ":")
+-- Deliberately not via map(): "silent" makes Neovim draw the ":" at the end of a
+-- lingering message line instead of clearing it, so the first ";" looks dead
+vim.keymap.set("n", ";", ":", { noremap = true })
 map("n", "<leader>d", ":NERDTreeToggle<CR>")
 map("n", "<C-l>", ":EraseBadWhitespace<CR>")
 map("n", "<leader>t", ":GFiles<CR>")

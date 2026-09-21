@@ -35,6 +35,45 @@ vim.lsp.config('pylsp', {})
 -- TypeScript / JavaScript
 vim.lsp.config('ts_ls', {})
 
+-- OCaml
+-- ocamllsp is linked against the compiler-libs of the OCaml version it was built
+-- with, so the binary has to come from the same switch as the project. The root
+-- dir is only known once the client starts, hence the function form of `cmd`.
+local function ocamllsp_cmd(dispatchers, config)
+    local candidates = {}
+    if config.root_dir then
+        -- Local switch created by `opam switch create .`
+        candidates[#candidates + 1] = config.root_dir .. '/_opam/bin/ocamllsp'
+    end
+    if vim.env.OPAM_SWITCH_PREFIX then
+        candidates[#candidates + 1] = vim.env.OPAM_SWITCH_PREFIX .. '/bin/ocamllsp'
+    end
+    candidates[#candidates + 1] = 'ocamllsp'
+
+    for _, exe in ipairs(candidates) do
+        if vim.fn.executable(exe) == 1 then
+            return vim.lsp.rpc.start({ exe }, dispatchers, {
+                cwd = config.cmd_cwd,
+                env = config.cmd_env,
+                detached = config.detached,
+            })
+        end
+    end
+
+    error('ocamllsp not found: run `opam install ocaml-lsp-server` in the project switch')
+end
+
+vim.lsp.config('ocamllsp', {
+    cmd = ocamllsp_cmd,
+    settings = {
+        extendedHover = { enable = true },
+        syntaxDocumentation = { enable = true },
+    },
+})
+
+-- Installed through opam, not mason, so mason-lspconfig's automatic_enable skips it
+vim.lsp.enable('ocamllsp')
+
 require('mason').setup({
     ui = {
         icons = {
