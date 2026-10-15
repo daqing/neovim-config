@@ -100,8 +100,51 @@ require("lazy").setup({
     { "phanviet/vim-monokai-pro", priority = 1000 },
     "w0ng/vim-hybrid",
     "drewtempelmeyer/palenight.vim",
-    "chriskempson/base16-vim",
+    -- "chriskempson/base16-vim",
     "tanvirtin/monokai.nvim",
+    {
+      "folke/tokyonight.nvim",
+      priority = 1000,   -- 让主题最先加载，避免闪烁
+      config = function() vim.cmd.colorscheme("tokyonight-night") end,
+    },
+
+    {
+      "catppuccin/nvim",
+      name = "catppuccin",
+      priority = 1000,
+      config = function() vim.cmd.colorscheme("catppuccin-mocha") end
+    },
+
+    {
+      "sainnhe/gruvbox-material",
+      priority = 1000,
+      config = function() vim.cmd.colorscheme("gruvbox-material") end
+    },
+
+    {
+      "sainnhe/everforest",
+      priority = 1000,
+      config = function() vim.cmd.colorscheme("everforest") end
+    },
+
+    {
+      "rebelot/kanagawa.nvim",
+      priority = 1000,
+      config = function() vim.cmd.colorscheme("kanagawa") end
+    },
+
+    {
+      "shaunsingh/nord.nvim",
+      priority = 1000,
+      config = function() vim.cmd.colorscheme("nord") end
+    },
+
+    {
+      "EdenEast/nightfox.nvim",
+      priority = 1000,
+      config = function() vim.cmd.colorscheme("duskfox") end
+    },
+
 
     -- Search & navigation
     "junegunn/fzf",
@@ -119,7 +162,48 @@ require("lazy").setup({
     "mason-org/mason.nvim",
     "mason-org/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig",
+
+    -- MoonBit
+    {
+        "moonbit-community/moonbit.nvim",
+        ft = { "moonbit" },
+        -- ftdetect covers .mbt/.mbti/moon.mod/moon.pkg/moon.work, but the plugin
+        -- also attaches to these and they resolve to json/markdown
+        event = {
+            "BufReadPre moon.mod.json",
+            "BufNewFile moon.mod.json",
+            "BufReadPre moon.pkg.json",
+            "BufNewFile moon.pkg.json",
+            "BufReadPre *.mbt.md",
+            "BufNewFile *.mbt.md",
+        },
+        -- moonbit.mooncakes loads plenary.curl unconditionally
+        dependencies = { "nvim-lua/plenary.nvim" },
+        opts = {
+            mooncakes = {
+                virtual_text = true,
+                use_local = true,
+            },
+            -- nvim-treesitter is not installed; the parser is built by hand
+            -- from the checkout in ~/.local/share/nvim/moonbit-parser into
+            -- ~/.local/share/nvim/site/{parser,queries}. To rebuild after
+            -- updating the grammar:
+            --   cd ~/.local/share/nvim/moonbit-parser && git pull
+            --   cc -O2 -std=c11 -fPIC -shared -I src \
+            --     -o ~/.local/share/nvim/site/parser/moonbit.so src/parser.c src/scanner.c
+            --   cp queries/*.scm ~/.local/share/nvim/site/queries/moonbit/
+            treesitter = { auto_install = false },
+        },
+    },
+
+    {
+        dir = '/Users/daqing/mzevo/open-source/emo-lang/emo/editors/neovim',
+        main = 'emo',   -- the directory is named `neovim`, the module is not
+        opts = {},
+    },
 })
+
+require("tokyonight").setup({ transparent = true })
 
 ----------------------------------------------------------------------
 -- External runtime paths (only if present)
@@ -136,7 +220,7 @@ require("lsp")
 
 -- Colorscheme
 opt.background = "dark"
-local is_ok, _ = pcall(vim.cmd, "colorscheme monokai_pro")
+local is_ok, _ = pcall(vim.cmd, "colorscheme gruvbox-material")
 if not is_ok then
     vim.notify("colorscheme monokai_pro not found!")
 end
@@ -164,6 +248,8 @@ map("n", "tn", ":tabnext<CR>")
 map("n", "tq", ":tabclose<CR>")
 map("n", "pa", ":% s/^[+-]//<CR>")
 map("n", "<C-b>", ":<C-u>call gitblame#echo()<CR>")
+-- <Esc> back to terminal-normal; vim/fzf are not nested inside :term
+map("t", "<Esc>", "<C-\\><C-n>", "Leave terminal mode")
 
 ----------------------------------------------------------------------
 -- Commands & autocommands
@@ -198,3 +284,56 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     pattern = "*",
     command = "EraseBadWhitespace",
 })
+
+-- Vim's :terminal drops you straight into job mode, Neovim's leaves you in
+-- terminal-normal where keys are taken as normal-mode commands
+vim.api.nvim_create_autocmd("TermOpen", {
+    group = augroup,
+    callback = function()
+        vim.cmd("startinsert")
+    end,
+})
+
+-- vim-bad-whitespace's window-local :match is cloned into split windows after
+-- its own WinEnter cleanup has run, so terminal buffers keep highlighting
+-- trailing whitespace (guibg=red) forever; clear it whenever one is shown
+local function clear_terminal_bad_whitespace(buf)
+    for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+        vim.api.nvim_win_call(win, function()
+            for _, m in ipairs(vim.fn.getmatches()) do
+                if m.group == "BadWhitespace" then
+                    vim.fn.matchdelete(m.id)
+                end
+            end
+        end)
+    end
+end
+
+vim.api.nvim_create_autocmd({ "TermOpen", "BufWinEnter", "WinEnter" }, {
+    group = augroup,
+    callback = function(ev)
+        if vim.bo[ev.buf].buftype ~= "terminal" then
+            return
+        end
+        clear_terminal_bad_whitespace(ev.buf)
+        vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(ev.buf) then
+                clear_terminal_bad_whitespace(ev.buf)
+            end
+        end)
+    end,
+})
+
+-- MoonBit: 'cindent' mis-indents it (no statement terminators) and Neovim has
+-- no built-in consumer for indents.scm, so both folds and indent come from the
+-- parse tree. See lua/moonbit_indent.lua.
+vim.api.nvim_create_autocmd("FileType", {
+    group = augroup,
+    pattern = "moonbit",
+    callback = function()
+        vim.opt_local.foldmethod = "expr"
+        vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+        vim.opt_local.indentexpr = "v:lua.require'moonbit_indent'.indentexpr()"
+    end,
+})
+
