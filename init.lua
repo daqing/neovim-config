@@ -248,8 +248,6 @@ map("n", "tn", ":tabnext<CR>")
 map("n", "tq", ":tabclose<CR>")
 map("n", "pa", ":% s/^[+-]//<CR>")
 map("n", "<C-b>", ":<C-u>call gitblame#echo()<CR>")
--- <Esc> back to terminal-normal; vim/fzf are not nested inside :term
-map("t", "<Esc>", "<C-\\><C-n>", "Leave terminal mode")
 
 ----------------------------------------------------------------------
 -- Commands & autocommands
