@@ -181,6 +181,9 @@ require("lazy").setup({
         -- moonbit.mooncakes loads plenary.curl unconditionally
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = {
+            -- moon-lsp regenerates pkg.generated.mbti in the background and
+            -- fights the installed toolchain's rendering; run moon info by hand.
+            lsp = false,
             mooncakes = {
                 virtual_text = true,
                 use_local = true,
@@ -201,6 +204,26 @@ require("lazy").setup({
         dir = '/Users/daqing/mzevo/open-source/emo-lang/emo/editors/neovim',
         main = 'emo',   -- the directory is named `neovim`, the module is not
         opts = {},
+    },
+
+    {
+      'nvim-telescope/telescope.nvim',
+      tag = '0.1.8', -- 或 branch = '0.1.x'
+      dependencies = { 'nvim-lua/plenary.nvim' },
+      keys = {
+        { '<leader>ff', '<cmd>Telescope find_files<cr>', desc = 'Find Files' },
+        { '<leader>fg', '<cmd>Telescope live_grep<cr>',  desc = 'Live Grep' },
+        { '<leader>fb', '<cmd>Telescope buffers<cr>',    desc = 'Buffers' },
+        { '<leader>fs', '<cmd>Telescope lsp_workspace_symbols<cr>', desc = 'Workspace Symbols' },
+        { '<leader>fd', '<cmd>Telescope lsp_document_symbols<cr>',  desc = 'Document Symbols' },
+        { 'gi',         '<cmd>Telescope lsp_implementations<cr>',  desc = 'Implementations' },
+        { 'gd',         '<cmd>Telescope lsp_definitions<cr>',      desc = 'Definitions' },
+      },
+      opts = {
+        defaults = {
+          file_ignore_patterns = { 'node_modules', '%.git/' },
+        },
+      },
     },
 })
 
@@ -243,8 +266,6 @@ map("n", "<leader>d", ":NERDTreeToggle<CR>")
 map("n", "<leader>q", ":cclose<CR>")
 map("n", "<C-l>", ":EraseBadWhitespace<CR>")
 map("n", "<leader>t", ":Files<CR>")
-vim.keymap.set('n', '<leader>fs', vim.lsp.buf.workspace_symbol)
-vim.keymap.set('n', 'gi', vim.lsp.buf.implementation)
 map("n", "<C-n>", ":cnext<CR>")
 map("n", "tp", ":tabprev<CR>")
 map("n", "tn", ":tabnext<CR>")
