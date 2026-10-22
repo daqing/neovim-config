@@ -50,7 +50,8 @@ opt.incsearch = true
 -- Editing
 opt.wrap = false
 opt.backspace = "indent,eol,start"
-opt.wildmode = "longest,list"
+-- 第一次 Tab 补全最长公共前缀，之后每次 Tab 在候选间循环（绕一圈后回到原始输入）
+opt.wildmode = "longest:full,full"
 opt.tabstop = 2
 opt.softtabstop = 2
 opt.shiftwidth = 2
@@ -235,13 +236,15 @@ end
 map("n", "<C-a>", ":!git add %<CR>")
 map("n", "<C-x>", ":cclose<CR>")
 map("n", "<leader>/", ":nohlsearch<CR>")
-map("n", "<F1>", ":wqall<CR>")
 -- Deliberately not via map(): "silent" makes Neovim draw the ":" at the end of a
 -- lingering message line instead of clearing it, so the first ";" looks dead
 vim.keymap.set("n", ";", ":", { noremap = true })
 map("n", "<leader>d", ":NERDTreeToggle<CR>")
+map("n", "<leader>q", ":cclose<CR>")
 map("n", "<C-l>", ":EraseBadWhitespace<CR>")
-map("n", "<leader>t", ":GFiles<CR>")
+map("n", "<leader>t", ":Files<CR>")
+vim.keymap.set('n', '<leader>fs', vim.lsp.buf.workspace_symbol)
+vim.keymap.set('n', 'gi', vim.lsp.buf.implementation)
 map("n", "<C-n>", ":cnext<CR>")
 map("n", "tp", ":tabprev<CR>")
 map("n", "tn", ":tabnext<CR>")
