@@ -43,7 +43,30 @@ opt.mouse = "a"
 opt.updatetime = 500
 
 -- 行号后保留空格
-vim.opt.statuscolumn = "%s%=%l  "
+vim.opt.statuscolumn = "%s%=%l "
+
+
+local function set_line_number_colors()
+  local dark = vim.o.background == "dark"
+  vim.api.nvim_set_hl(0, "LineNr", {
+    fg = dark and "#3a3a3a" or "#E0E0E0",
+    ctermfg = dark and 238 or 245,
+  })
+
+  vim.api.nvim_set_hl(0, "CursorLineNr", {
+    fg = "#ffcc66",
+    ctermfg = 220,
+    bold = true,
+  })
+end
+
+set_line_number_colors()
+
+-- 切换配色方案后重新应用，避免被配色方案覆盖
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = vim.api.nvim_create_augroup("LineNumberColors", { clear = true }),
+  callback = set_line_number_colors,
+})
 
 -- Search
 opt.hlsearch = true
