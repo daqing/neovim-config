@@ -35,11 +35,15 @@ opt.title = true
 opt.termguicolors = true
 opt.guifont = "Monaco:h22"
 opt.colorcolumn = "80"
-opt.signcolumn = "yes"
+opt.signcolumn = "auto"
+opt.numberwidth = 1
 opt.splitbelow = true
 opt.splitright = true
 opt.mouse = "a"
 opt.updatetime = 500
+
+-- 行号后保留空格
+vim.opt.statuscolumn = "%s%=%l  "
 
 -- Search
 opt.hlsearch = true
