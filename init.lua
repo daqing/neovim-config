@@ -23,7 +23,7 @@ opt.modelines = 5
 opt.hidden = true
 
 -- UI
-opt.number = true
+opt.number = false
 opt.showmatch = true
 opt.matchtime = 5
 opt.laststatus = 2
@@ -43,7 +43,7 @@ opt.mouse = "a"
 opt.updatetime = 500
 
 -- 行号后保留空格
-vim.opt.statuscolumn = "%s%=%l "
+vim.opt.statuscolumn = "%s%=%l  "
 
 
 local function set_line_number_colors()
@@ -286,6 +286,9 @@ end
 map("n", "<C-a>", ":!git add %<CR>")
 map("n", "<C-x>", ":cclose<CR>")
 map("n", "<leader>/", ":nohlsearch<CR>")
+map("n", "<leader>n", function()
+    vim.o.number = not vim.o.number
+end, "Toggle line numbers")
 -- Deliberately not via map(): "silent" makes Neovim draw the ":" at the end of a
 -- lingering message line instead of clearing it, so the first ";" looks dead
 vim.keymap.set("n", ";", ":", { noremap = true })
