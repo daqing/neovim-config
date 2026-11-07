@@ -49,7 +49,7 @@ vim.opt.statuscolumn = "%s%=%l  "
 local function set_line_number_colors()
   local dark = vim.o.background == "dark"
   vim.api.nvim_set_hl(0, "LineNr", {
-    fg = dark and "#3a3a3a" or "#E0E0E0",
+    fg = dark and "#333333" or "#999999",
     ctermfg = dark and 238 or 245,
   })
 
@@ -134,6 +134,17 @@ require("lazy").setup({
       "folke/tokyonight.nvim",
       priority = 1000,   -- 让主题最先加载，避免闪烁
       config = function() vim.cmd.colorscheme("tokyonight-night") end,
+    },
+
+    {
+      "folke/trouble.nvim",
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+      opts = {},  -- 空表即使用默认配置
+      cmd = "Trouble",
+      keys = {
+        { "<leader>e", "<cmd>Trouble diagnostics toggle<cr>", desc = "诊断列表" },
+        { "<leader>E", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "当前文件诊断" },
+      },
     },
 
     {
@@ -271,9 +282,9 @@ require("lsp")
 
 -- Colorscheme
 opt.background = "dark"
-local is_ok, _ = pcall(vim.cmd, "colorscheme gruvbox-material")
+local is_ok, _ = pcall(vim.cmd, "colorscheme hybrid")
 if not is_ok then
-    vim.notify("colorscheme monokai_pro not found!")
+    vim.notify("colorscheme hybrid not found!")
 end
 
 ----------------------------------------------------------------------
