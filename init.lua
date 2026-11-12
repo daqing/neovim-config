@@ -45,6 +45,17 @@ opt.updatetime = 500
 -- 行号后保留空格
 vim.opt.statuscolumn = "%s%=%l  "
 
+-- 配色方案切换
+vim.api.nvim_create_user_command('ThemeNight', function()
+  vim.o.background = 'dark'
+  vim.cmd('colorscheme tokyonight-moon')
+end, {})
+
+vim.api.nvim_create_user_command('ThemeDay', function()
+  vim.o.background = 'light'
+  vim.cmd('colorscheme rose-pine-dawn')
+end, {})
+
 
 local function set_line_number_colors()
   local dark = vim.o.background == "dark"
@@ -184,6 +195,13 @@ require("lazy").setup({
       config = function() vim.cmd.colorscheme("duskfox") end
     },
 
+    {
+      "rose-pine/neovim",
+      name = "rose-pine",
+      priority = 1000,
+      config = function() vim.cmd.colorscheme("rose-pine") end
+    },
+
 
     -- Search & navigation
     "junegunn/fzf",
@@ -281,10 +299,10 @@ end
 require("lsp")
 
 -- Colorscheme
-opt.background = "dark"
-local is_ok, _ = pcall(vim.cmd, "colorscheme hybrid")
+-- opt.background = "dark"
+local is_ok, _ = pcall(vim.cmd, "colorscheme rose-pine-dawn")
 if not is_ok then
-    vim.notify("colorscheme hybrid not found!")
+    vim.notify("colorscheme rose-pine-dawn not found!")
 end
 
 ----------------------------------------------------------------------
