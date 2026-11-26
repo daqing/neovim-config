@@ -56,29 +56,6 @@ vim.api.nvim_create_user_command('ThemeDay', function()
   vim.cmd('colorscheme rose-pine-dawn')
 end, {})
 
-
-local function set_line_number_colors()
-  local dark = vim.o.background == "dark"
-  vim.api.nvim_set_hl(0, "LineNr", {
-    fg = dark and "#333333" or "#999999",
-    ctermfg = dark and 238 or 245,
-  })
-
-  vim.api.nvim_set_hl(0, "CursorLineNr", {
-    fg = "#ffcc66",
-    ctermfg = 220,
-    bold = true,
-  })
-end
-
-set_line_number_colors()
-
--- 切换配色方案后重新应用，避免被配色方案覆盖
-vim.api.nvim_create_autocmd("ColorScheme", {
-  group = vim.api.nvim_create_augroup("LineNumberColors", { clear = true }),
-  callback = set_line_number_colors,
-})
-
 -- Search
 opt.hlsearch = true
 opt.ignorecase = true
@@ -134,6 +111,14 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- vim.lsp.config('ocamllsp', {
+--   cmd = { 'ocamllsp' },
+--   filetypes = { 'ocaml', 'ocaml.menhir', 'ocaml.interface', 'ocaml.ocamllex', 'reason', 'dune' },
+--   root_markers = { '*.opam', 'esy.json', 'package.json', '.git', 'dune-project', 'dune-workspace' },
+-- })
+--
+-- vim.lsp.enable('ocamllsp')
+
 require("lazy").setup({
     -- Color schemes
     { "phanviet/vim-monokai-pro", priority = 1000 },
@@ -145,6 +130,14 @@ require("lazy").setup({
       "folke/tokyonight.nvim",
       priority = 1000,   -- 让主题最先加载，避免闪烁
       config = function() vim.cmd.colorscheme("tokyonight-night") end,
+    },
+
+    {
+      'tarides/ocaml.nvim',
+      ft = { 'ocaml', 'ocaml.interface', 'dune' },
+      config = function()
+        require('ocaml').setup()
+      end,
     },
 
     {
@@ -300,7 +293,7 @@ require("lsp")
 
 -- Colorscheme
 -- opt.background = "dark"
-local is_ok, _ = pcall(vim.cmd, "colorscheme rose-pine-dawn")
+local is_ok, _ = pcall(vim.cmd, "colorscheme rose-pine-moon")
 if not is_ok then
     vim.notify("colorscheme rose-pine-dawn not found!")
 end
